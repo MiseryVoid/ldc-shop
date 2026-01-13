@@ -29,80 +29,114 @@
 - **管理后台**:
     - 商品/分类管理、库存管理、销售统计、订单处理、顾客管理。
 
-## �️ 部署指南
+## 🚀 部署指南
 
-### 前置要求
-- Cloudflare 账号
+### 方式一：网页部署 (Workers Builds) - 推荐
+
+无需命令行，完全在 Cloudflare Dashboard 操作。
+
+#### 1. 创建 D1 数据库
+
+1. 登录 [Cloudflare Dashboard](https://dash.cloudflare.com)
+2. 左侧菜单 **Storage & Databases** → **D1**
+3. 点击 **Create database**，输入名称（如 `ldc-shop`）
+4. 创建后，复制 **Database ID**
+
+#### 2. 修改 wrangler.json
+
+在仓库的 `_workers_next/wrangler.json` 中添加 D1 配置：
+
+```json
+{
+    "name": "ldc-shop-next",
+    "main": ".open-next/worker.js",
+    "compatibility_date": "2025-11-12",
+    "compatibility_flags": ["nodejs_compat"],
+    "assets": {
+        "directory": ".open-next/assets",
+        "binding": "ASSETS"
+    },
+    "d1_databases": [
+        {
+            "binding": "DB",
+            "database_name": "你的数据库名",
+            "database_id": "你的-DATABASE-ID"
+        }
+    ],
+    "observability": {
+        "enabled": true
+    }
+}
+```
+
+#### 3. 连接 Git 仓库部署
+
+1. Cloudflare Dashboard → **Workers & Pages** → **Create application**
+2. 选择 **Connect to Git**，连接你的 GitHub/GitLab 仓库
+3. 配置构建设置：
+   - **Path**: `_workers_next`
+   - **Build command**: `npm install && npx opennextjs-cloudflare build`
+   - **Deploy command**: `npx wrangler deploy`
+
+4. 点击 **Deploy**
+
+#### 4. 配置环境变量
+
+部署成功后，进入项目 **Settings** → **Variables and Secrets**：
+
+| 变量名 | 类型 | 说明 |
+|--------|------|------|
+| `OAUTH_CLIENT_ID` | Text 或 Secret | Linux DO Connect Client ID |
+| `OAUTH_CLIENT_SECRET` | Secret | Linux DO Connect Client Secret |
+| `MERCHANT_ID` | Text 或 Secret | EPay 商户 ID |
+| `MERCHANT_KEY` | Secret | EPay 商户 Key |
+| `AUTH_SECRET` | Secret | 随机字符串 (可用 `openssl rand -base64 32` 生成) |
+| `ADMIN_USERS` | Text | 管理员用户名，逗号分隔 |
+| `NEXT_PUBLIC_APP_URL` | **Text** | 你的 Workers 域名 (如 `https://ldc-shop.xxx.workers.dev`) |
+
+> ⚠️ **重要**: `NEXT_PUBLIC_APP_URL` **必须**设置为 Text 类型，不能用 Secret，否则前端无法访问！
+
+#### 5. 首次访问
+
+访问你的 Workers 域名，首页会自动创建所有数据库表。
+
+---
+
+### 方式二：命令行部署 (CLI)
+
+适合熟悉命令行的开发者。
+
+#### 前置要求
 - Node.js & NPM
 - Wrangler CLI (`npm install -g wrangler`)
 
-### 1. 初始化
-进入目录并安装依赖：
+#### 1. 初始化
 ```bash
 cd _workers_next
 npm install
 ```
 
-### 2. 创建数据库
-在 Cloudflare 上创建一个新的 D1 数据库：
+#### 2. 创建数据库
 ```bash
 npx wrangler d1 create ldc-shop-next
 ```
-**注意**: 复制终端输出的 `database_id`。
+复制输出的 `database_id`，填入 `wrangler.json`。
 
-### 3. 修改配置
-打开 `wrangler.json`，找到 `d1_databases` 部分，将 `database_id` 替换为你刚才获取的 ID。
-
-```json
-"d1_databases": [
-  {
-    "binding": "DB",
-    "database_name": "ldc-shop-next",
-    "database_id": "你的-DATABASE-ID"
-  }
-]
-```
-
-### 4. 数据库迁移
-生成并应用数据库表结构到 Cloudflare D1：
-```bash
-# 生成 SQL 迁移文件
-npx drizzle-kit generate
-
-# 应用到远程 D1 数据库
-npx wrangler d1 migrations apply DB --remote
-```
-
-### 5. 配置环境变量 (Secrets)
-需要在 Cloudflare 后台或使用 Wrangler 设置以下环境变量（请替换为你的实际值）：
-
-**LDC Connect / OAuth 配置:**
+#### 3. 配置环境变量
 ```bash
 npx wrangler secret put OAUTH_CLIENT_ID
 npx wrangler secret put OAUTH_CLIENT_SECRET
-```
-*回调地址 (Callback URL)*: `https://你的域名.workers.dev/api/auth/callback/linuxdo`
-
-**EPay / 支付配置:**
-```bash
 npx wrangler secret put MERCHANT_ID
 npx wrangler secret put MERCHANT_KEY
-```
-*回调 URI*: `https://你的域名.workers.dev/callback`
-*通知 URL*: `https://你的域名.workers.dev/api/notify`
-
-**其他配置:**
-```bash
-npx wrangler secret put AUTH_SECRET  # 生成一个随机字符串: openssl rand -base64 32
-npx wrangler secret put ADMIN_USERS  # 管理员用户名，如: user1,user2
-npx wrangler secret put NEXT_PUBLIC_APP_URL # https://你的域名.workers.dev
+npx wrangler secret put AUTH_SECRET
+npx wrangler secret put ADMIN_USERS
+npx wrangler secret put NEXT_PUBLIC_APP_URL
 ```
 
-### 6. 部署上线
+#### 4. 部署
 ```bash
 npm run deploy
 ```
-部署完成后，Cloudflare 会返回一个访问链接（如 `https://ldc-shop-next.你的子域.workers.dev`）。
 
 ---
 

